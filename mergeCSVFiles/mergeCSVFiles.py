@@ -1,10 +1,9 @@
 import pandas
-import os
-import sys
+import sys, os, subprocess, re
 import datetime
-import re
 
 EXPECTED_NO_OF_COLUMNS = 3
+OUTPUT_FILENNAME = "output.csv"
 
 # Valid InputPath is valid directory
 def validatePath(inputPath):
@@ -30,23 +29,30 @@ def validateFile(filename, data, noOfColumns):
 
     # Verify filename format
     datefromFileName = re.findall(r'\d+', filename)
-    if len(datefromFileName) > 0 and datefromFileName[0] != data.iloc[0].values[0].replace('/', ''):
-        print ("Skipping file {} due to failure in filename format.".format(filename))
+    datefromData = datetime.datetime.strptime(data.iloc[0].values[0], '%m/%d/%Y').strftime("%m%d%Y")
+    if len(datefromFileName) > 0 and datefromFileName[0] != datefromData:
+        print ("Skipping file {} due to failure in filename format and date {} from data validation.".format(filename, datefromData))
         return False
 
     return True
 
+# Keep track of raw count
+def line_count(filename):
+    return sum(1 for line in open(filename, mode='r', encoding='ISO-8859-1'))
+
 # Looks for csv file and merge them
 def get_and_merge_csv_files(path):	
     list_df = []
+    total_line_count = 0
     for file in os.listdir(path):
         if file.endswith(".csv"):
-            df = pandas.read_csv(path + "\\" + file)
+            df = pandas.read_csv(path + "\\" + file, encoding= 'unicode_escape')
             if validateFile(file, df.iloc[[0, -1]], len(df.columns)):
-                print (df)
+                total_line_count += line_count(path + "\\" + file)
                 list_df.append(df)
     if len(list_df) > 0:
-        pandas.concat(list_df).to_csv( "output.csv", index=False)
+        pandas.concat(list_df).to_csv(OUTPUT_FILENNAME, index=False)
+        print ("Total raw count from actual file is {} and merged file is {}".format(total_line_count, line_count(OUTPUT_FILENNAME)))
     else:
         print ("No files found to merge")
         
