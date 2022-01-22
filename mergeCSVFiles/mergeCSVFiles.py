@@ -2,6 +2,20 @@ import pandas
 import sys, os, subprocess, re
 import datetime
 
+### mergeCSVFiles
+
+## This program does following:
+
+# 1. Merges multiple csv files of specific format.
+# 2. Filename should be format 'string_MMDDYYYY'
+# 3. First Column should have datevalue in format MMDDYYYY
+
+### Install required package
+# pip3 install pandas
+
+### Run the program
+# python mergeCSVFiles.py <directoryPath>
+
 EXPECTED_NO_OF_COLUMNS = 3
 OUTPUT_FILENNAME = "output.csv"
 
@@ -57,7 +71,11 @@ def get_and_merge_csv_files(path):
         print ("No files found to merge")
         
 if __name__ == "__main__":
-    inputPath = sys.argv[1]
+    
+    inputPath = ""
+    if len(sys.argv) > 1:
+        inputPath = sys.argv[1]
+        
     if validatePath(inputPath):
         get_and_merge_csv_files(inputPath);
     else:
