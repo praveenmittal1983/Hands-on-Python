@@ -1,5 +1,13 @@
 
-import sys, json, log
+## Utility to interact with Birst Web Services (SOAP)
+# Needs following:
+# 1. Birst user should have Birst Web Services product. [addproduct <username> 11]
+# 2. [log] and [data] directory should exist.
+# 3. Packages like Zeep, PyYaml are needed.
+# 4. Command to run the utility:
+# python .\run.py --listallspaces --listCreatedUsers --getAllHierarchies --listGroupsInSpace --listCustomSubjectAreas --getSourcesList --listCloudConnections
+
+import sys, json
 import argparse, traceback
 from zeep.helpers import serialize_object
 from common import config, fileOperations, log, timeDecorator
