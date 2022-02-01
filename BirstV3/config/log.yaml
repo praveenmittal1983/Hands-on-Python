@@ -1,0 +1,38 @@
+version: 1
+
+formatters:
+  simple:
+    format: "%(asctime)s %(name)s: %(message)s"
+  extended:
+    format: "[%(asctime)s: %(name)s: %(filename)s:%(lineno)s:%(funcName)s]: %(levelname)s: %(message)s"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+
+  file_handler:
+    class: logging.FileHandler
+    level: INFO
+    filename: log//birst.log
+    formatter: extended
+    
+  rotating_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    filename: log//birst.log
+    formatter: extended
+    mode: a
+    maxBytes: 1048576
+    backupCount: 10
+
+loggers:
+  dev:
+    level: NOTSET
+    handlers: [rotating_file_handler]
+  test:
+    handlers: [file_handler]
+root:
+  level: NOTSET
+  handlers: [console]
