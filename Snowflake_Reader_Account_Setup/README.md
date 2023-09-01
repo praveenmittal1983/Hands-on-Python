@@ -65,8 +65,3 @@ Understanding config file
 3. Provide a value for the key [context_id] to create shareable objects for the Primary database.
 
 4. Provide a value for the key [event_owner_id] to create shareable objects for the Flash database.
-
-
-Note:
-----
-For some reason, if script has run in the clean-up mode for the wrong client, then the reader account for the client would be deleted. Therefore, we have to re-create the account which implies it will have new Account URL, UserName and may be credentials which end-user has to change.
