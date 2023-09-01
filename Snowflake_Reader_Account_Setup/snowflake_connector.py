@@ -11,7 +11,7 @@ class SnowflakeConnector(Config):
         if not cls._instance:
             cls._instance = super().__new__(cls)
         return cls._instance
-
+    
     def __init__(self, locale, reader_account={}, print_only=True) -> None:
         logger.info("Initializing Snowflake Connection")
         super().__init__(locale)
@@ -23,7 +23,7 @@ class SnowflakeConnector(Config):
                     password=self.config['password'],
                     account=self.config['account'],
                     warehouse=self.config['warehouse'],
-                    role=self.config['role']
+                    role='ACCOUNTADMIN'
                 )
             else:
                 self._conn = snowflake.connector.connect(
@@ -45,14 +45,29 @@ class SnowflakeConnector(Config):
             raise RuntimeError("Failed to connect Snowflake")
 
         self.params = {}
-        self.params['db_name'] = self.config['db_name']
-        self.params['schema'] = self.config['schema']
+        ext_client_name = self.config['ext_client_name'].upper().strip()
+        self.params['ext_client_name'] = ext_client_name
+        self.params['ext_client_id'] = None
+
+        self.params['config_db'] = self.config['config_db']
+        self.params['config_schema'] = self.config['config_schema']
+        
+        self.params['primary_db'] = self.config['primary_db']
+        self.params['primary_schema'] = self.config['primary_schema']
         self.params['context_id'] = self.config['context_id']
-        self.params['client_name'] = self.config['client_name']
-        self.params['reader_account_db'] = self.config['reader_account_db']
+        self.params['context_names'] = self.config['context_names']
+        self.params['primary_ignore_tables'] = self.config['primary_ignore_tables']
+
+        self.params['flash_db'] = self.config['flash_db']
+        self.params['flash_schema'] = self.config['flash_schema']
+        self.params['event_owner_id'] = self.config['event_owner_id']
+        self.params['event_owner_names'] = self.config['event_owner_names']
+        self.params['flash_ignore_tables'] = self.config['flash_ignore_tables']
+        
+        self.params['reader_account_db_name'] = self.config['reader_account_db_display_name']
         self.params['reader_account_admin_email'] = self.config['reader_account_admin_email']
         self.params['print_only'] = print_only
-        
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         logger.info("Exit Snowflake")
         self._cursor.close()

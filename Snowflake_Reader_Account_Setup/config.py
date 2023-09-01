@@ -10,6 +10,7 @@ class Config:
             self.config = configparser.ConfigParser()
             if not self.config.read("config.ini"):
                 raise FileNotFoundError("Configuration file 'config.ini' not found")
+            self.common = self.config['Common_SQL']
             self.config = self.config[locale]
         except KeyError as e_msg:
             raise RuntimeError(f"Failed process config file with error: {e_msg}") from e_msg
